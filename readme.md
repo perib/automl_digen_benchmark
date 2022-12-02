@@ -5,6 +5,7 @@ The two .sh files includes the settings for the Slurm scheduler as well as flags
 
 ## Environments
 Using the latest master branch on the TPOT repository https://github.com/epistasislab/tpot
+
 Using a modified DIGEN fork (found in this repository), to add in a termination signal.
 
 Environments were set up as follows: 
