@@ -73,8 +73,9 @@ def run_benchmarking(experiment_dict, base_save_folder, local_cache_dir, num_run
             #some automl methods can't be pickled
             #extract pickleable components.
             if automl_model == "h2o":
-                final_estimator_resutls[dset]['classifier'] = "h2o - load from path with h2o.load_model(model_path)"
-                #final_estimator_resutls[dset]['classifier_path'] = h2o.save_model(model=this_est, path=f"{save_folder}/h2o_export", force=True)
+
+                #final_estimator_resutls[dset]['classifier'] = "h2o - load from path with h2o.load_model(model_path)"
+                final_estimator_resutls[dset]['classifier'] = h2o.save_model(model=this_est.estimator.leader, path=f"{save_folder}/{dset}/h2o_export", force=True)
                 final_estimator_resutls[dset]['leaderboard'] = this_est.estimator.leaderboard.as_data_frame()
             elif automl_model == "tpot":
                 final_estimator_resutls[dset]['classifier'] = this_est.fitted_pipeline_
@@ -109,7 +110,7 @@ if __name__ == '__main__':
     parser.add_argument("-n", "--njobs", default=16,  required=False, nargs='?')
     
     # "autosklearn" when to do the AutoSklearn run
-    parser.add_argument("-a", "--autosklearn", action='store_true',  required=False, nargs='?')
+    parser.add_argument("-a", "--autosklearn", action='store_true',  required=False)
 
     #where to save the results/models
     parser.add_argument("-s", "--savepath", default=None, required=False, nargs='?')
@@ -185,6 +186,20 @@ if __name__ == '__main__':
                     'automl': 'h2o',
                     'exp_name' : 'h2o_1200s',
                     'terminate_signal_timer' : int(1200*1.2),
+                    'n_jobs': n_jobs,
+                    'max_mem_size' : "1000G",
+                    'params' : {
+                        'stopping_metric': 'AUC', 
+                        'sort_metric':'AUC',
+                        'nfolds':10,
+                        'max_runtime_secs':1200,
+                        },
+                    },
+
+                                        {
+                    'automl': 'h2o',
+                    'exp_name' : 'h2o_3600s',
+                    'terminate_signal_timer' : int(3600*1.2),
                     'n_jobs': n_jobs,
                     'max_mem_size' : "1000G",
                     'params' : {
